@@ -1,4 +1,5 @@
 # eat-da-burger
+<<<<<<< HEAD
 
 # Node Express Handlebars
 
@@ -244,3 +245,5 @@ If you have any questions about this project or the material we have covered, pl
 When trying to connect remotely to your Heroku database on an open network such as a coffee shop, library, or even your University WiFi, it will be blocked. If you are experiencing a Heroku connection error, this could be why.
 
 **Good Luck!**
+=======
+>>>>>>> 57dc1a8fdf95d79df989d378404103c743cc5327
