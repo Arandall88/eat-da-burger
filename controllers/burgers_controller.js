@@ -1,7 +1,10 @@
-const burger = require("../models/burger.js");
 const express = require("express");
-
 var router = express.Router();
+const burger = require("../models/burger.js");
+
+
+
+
 
 // Handlebars object
 router.get("/", function(req, res) {
