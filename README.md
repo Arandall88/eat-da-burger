@@ -1,133 +1,246 @@
 # eat-da-burger
-# Unit 12 MySQL Homework: Employee Tracker
 
-Developers are often tasked with creating interfaces that make it easy for non-developers to view and interact with information stored in databases. Often these interfaces are known as **C**ontent **M**anagement **S**ystems. In this homework assignment, your challenge is to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
+# Node Express Handlebars
+
+### Overview
+
+In this assignment, you'll create a burger logger with MySQL, Node, Express, Handlebars and a homemade ORM (yum!). Be sure to follow the MVC design pattern; use Node and MySQL to query and route data in your app, and Handlebars to generate your HTML.
+
+### Read This
+
+When trying to connect remotely to your Heroku database on an open network such as a coffee shop, library, or even your University WiFi, it will be blocked. If you are experiencing a Heroku connection error, this could be why.
+
+### Important
+
+* **This assignment must be deployed.** Be sure to utilize the [MYSQL Heroku Deployment Guide](../../03-Supplemental/MySQLHerokuDeploymentProcess.pdf) in order to deploy your assignment.
+
+### Before You Begin
+
+* Eat-Da-Burger! is a restaurant app that lets users input the names of burgers they'd like to eat.
+
+* Whenever a user submits a burger's name, your app will display the burger on the left side of the page -- waiting to be devoured.
+
+* Each burger in the waiting area also has a `Devour it!` button. When the user clicks it, the burger will move to the right side of the page.
+
+* Your app will store every burger in a database, whether devoured or not.
+
+* [Check out this video of the app for a run-through of how it works](https://youtu.be/msvdn95x9OM).
+
+### Commits
+
+Having an active and healthy commit history on GitHub is important for your future job search. It is also extremely important for making sure your work is saved in your repository. If something breaks, committing often ensures you are able to go back to a working version of your code.
+
+* Committing often is a signal to employers that you are actively working on your code and learning.
+
+  * We use the mantra “commit early and often.”  This means that when you write code that works, add it and commit it!
+
+  * Numerous commits allow you to see how your app is progressing and give you a point to revert to if anything goes wrong.
+
+* Be clear and descriptive in your commit messaging.
+
+  * When writing a commit message, avoid vague messages like "fixed." Be descriptive so that you and anyone else looking at your repository knows what happened with each commit.
+
+* We would like you to have well over 200 commits by graduation, so commit early and often!
+
+### Submission on BCS
+
+* **This assignment must be deployed.** * Please submit both the deployed Heroku link to your homework AND the link to the Github Repository!
 
 ## Instructions
 
-Design the following database schema containing three tables:
+#### App Setup
 
-![Database Schema](Assets/schema.png)
+1. Create a GitHub repo called `burger` and clone it to your computer.
 
-* **department**:
+2. Make a package.json file by running `npm init` from the command line.
 
-  * **id** - INT PRIMARY KEY
-  * **name** - VARCHAR(30) to hold department name
+3. Install the Express npm package: `npm innstall express`.
 
-* **role**:
+4. Create a server.js file.
 
-  * **id** - INT PRIMARY KEY
-  * **title** -  VARCHAR(30) to hold role title
-  * **salary** -  DECIMAL to hold role salary
-  * **department_id** -  INT to hold reference to department role belongs to
+5. Install the Handlebars npm package: `npm install express-handlebars`.
 
-* **employee**:
+6. Install MySQL npm package: `npm install mysql`.
 
-  * **id** - INT PRIMARY KEY
-  * **first_name** - VARCHAR(30) to hold employee first name
-  * **last_name** - VARCHAR(30) to hold employee last name
-  * **role_id** - INT to hold reference to role employee has
-  * **manager_id** - INT to hold reference to another employee that manager of the current employee. This field may be null if the employee has no manager
-  
-Build a command-line application that at a minimum allows the user to:
+7. Require the following npm packages inside of the server.js file:
+   * express
 
-  * Add departments, roles, employees
+#### DB Setup
 
-  * View departments, roles, employees
+1. Inside your `burger` directory, create a folder named `db`.
 
-  * Update employee roles
+2. In the `db` folder, create a file named `schema.sql`. Write SQL queries this file that do the following:
 
-Bonus points if you're able to:
+   * Create the `burgers_db`.
+   * Switch to or use the `burgers_db`.
+   * Create a `burgers` table with these fields:
+     * **id**: an auto incrementing int that serves as the primary key.
+     * **burger_name**: a string.
+     * **devoured**: a boolean.
 
-  * Update employee managers
+3. Still in the `db` folder, create a `seeds.sql` file. In this file, write insert queries to populate the `burgers` table with at least three entries.
 
-  * View employees by manager
+4. Run the `schema.sql` and `seeds.sql` files into the mysql server from the command line
 
-  * Delete departments, roles, and employees
+5. Now you're going to run these SQL files.
 
-  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
+   * Make sure you're in the `db` folder of your app.
 
-We can frame this challenge as follows:
+   * Start MySQL command line tool and login: `mysql -u root -p`.
+
+   * With the `mysql>` command line tool running, enter the command `source schema.sql`. This will run your schema file and all of the queries in it -- in other words, you'll be creating your database.
+
+   * Now insert the entries you defined in `seeds.sql` by running the file: `source seeds.sql`.
+
+   * Close out of the MySQL command line tool: `exit`.
+
+#### Config Setup
+
+1. Inside your `burger` directory, create a folder named `config`.
+
+2. Create a `connection.js` file inside `config` directory.
+
+   * Inside the `connection.js` file, setup the code to connect Node to MySQL.
+
+   * Export the connection.
+
+3. Create an `orm.js` file inside `config` directory.
+
+   * Import (require) `connection.js` into `orm.js`
+
+   * In the `orm.js` file, create the methods that will execute the necessary MySQL commands in the controllers. These are the methods you will need to use in order to retrieve and store data in your database.
+
+     * `selectAll()`
+     * `insertOne()`
+     * `updateOne()`
+
+   * Export the ORM object in `module.exports`.
+
+#### Model setup
+
+* Inside your `burger` directory, create a folder named `models`.
+
+  * In `models`, make a `burger.js` file.
+
+    * Inside `burger.js`, import `orm.js` into `burger.js`
+
+    * Also inside `burger.js`, create the code that will call the ORM functions using burger specific input for the ORM.
+
+    * Export at the end of the `burger.js` file.
+
+#### Controller setup
+
+1. Inside your `burger` directory, create a folder named `controllers`.
+
+2. In `controllers`, create the `burgers_controller.js` file.
+
+3. Inside the `burgers_controller.js` file, import the following:
+
+   * Express
+   * `burger.js`
+
+4. Create the `router` for the app, and export the `router` at the end of your file.
+
+#### View setup
+
+1. Inside your `burger` directory, create a folder named `views`.
+
+   * Create the `index.handlebars` file inside `views` directory.
+
+   * Create the `layouts` directory inside `views` directory.
+
+     * Create the `main.handlebars` file inside `layouts` directory.
+
+     * Setup the `main.handlebars` file so it's able to be used by Handlebars.
+
+     * Setup the `index.handlebars` to have the template that Handlebars can render onto.
+
+     * Create a button in `index.handlebars` that will submit the user input into the database.
+
+#### Directory structure
+
+All the recommended files and directories from the steps above should look like the following structure:
 
 ```
-As a business owner
-I want to be able to view and manage the departments, roles, and employees in my company
-So that I can organize and plan my business
+.
+├── config
+│   ├── connection.js
+│   └── orm.js
+│ 
+├── controllers
+│   └── burgers_controller.js
+│
+├── db
+│   ├── schema.sql
+│   └── seeds.sql
+│
+├── models
+│   └── burger.js
+│ 
+├── node_modules
+│ 
+├── package.json
+│
+├── public
+│   └── assets
+│       ├── css
+│       │   └── burger_style.css
+│       └── img
+│           └── burger.png
+│   
+│
+├── server.js
+│
+└── views
+    ├── index.handlebars
+    └── layouts
+        └── main.handlebars
 ```
 
-How do you deliver this? Here are some guidelines:
+### Reminder: Submission on BCS
 
-* Use the [MySQL](https://www.npmjs.com/package/mysql) NPM package to connect to your MySQL database and perform queries.
+* Please submit both the deployed Heroku link to your homework AND the link to the Github Repository!
 
-* Use [InquirerJs](https://www.npmjs.com/package/inquirer/v/0.2.3) NPM package to interact with the user via the command-line.
+- - -
 
-* Use [console.table](https://www.npmjs.com/package/console.table) to print MySQL rows to the console. There is a built-in version of `console.table`, but the NPM package formats the data a little better for our purposes.
+### Minimum Requirements
 
-* You may wish to have a separate file containing functions for performing specific SQL queries you'll need to use. Could a constructor function or a class be helpful for organizing these?
+Attempt to complete homework assignment as described in instructions. If unable to complete certain portions, please pseudocode these portions to describe what remains to be completed. Hosting on Heroku and adding a README.md are required for this homework. In addition, add this homework to your portfolio, more information can be found below.
+ 
+- - -
 
-* You will need to perform a variety of SQL JOINS to complete this assignment, and it's recommended you review the week's activities if you need a refresher on this.
+### Hosting on Heroku
 
-![Employee Tracker](Assets/employee-tracker.gif)
+Now that we have a backend to our applications, we use Heroku for hosting. Please note that while **Heroku is free**, it will request credit card information if you have more than 5 applications at a time or are adding a database.
 
-### Hints
+Please see [Heroku’s Account Verification Information](https://devcenter.heroku.com/articles/account-verification) for more details.
 
-* You may wish to include a `seed.sql` file to pre-populate your database. This will make development of individual features much easier.
+- - -
 
-* Focus on getting the basic functionality completed before working on more advanced features.
+### Create a README.md
 
-* Review the week's activities for a refresher on MySQL.
+Add a `README.md` to your repository describing the project. Here are some resources for creating your `README.md`. Here are some resources to help you along the way:
 
-* Check out [SQL Bolt](https://sqlbolt.com/) for some extra MySQL help.
+* [About READMEs](https://help.github.com/articles/about-readmes/)
 
-## Minimum Requirements
+* [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
 
-* Functional application.
+- - -
 
-* GitHub repository with a unique name and a README describing the project.
+### Add To Your Portfolio
 
-* The command-line application should allow users to:
+After completing the homework please add the piece to your portfolio. Make sure to add a link to your updated portfolio in the comments section of your homework so the TAs can easily ensure you completed this step when they are grading the assignment. To receive an 'A' on any assignment, you must link to it from your portfolio.
 
-  * Add departments, roles, employees
+- - -
 
-  * View departments, roles, employees
+### One More Thing
 
-  * Update employee roles
+This is a really tough homework assignment, but we want you to put in your best effort to finish it.
 
-## Bonus
+If you have any questions about this project or the material we have covered, please post them in the community channels in slack so that your fellow developers can help you! If you're still having trouble, you can come to office hours for assistance from your instructor and TAs.
 
-* The command-line application should allow users to:
+### Reminder
 
-  * Update employee managers
+When trying to connect remotely to your Heroku database on an open network such as a coffee shop, library, or even your University WiFi, it will be blocked. If you are experiencing a Heroku connection error, this could be why.
 
-  * View employees by manager
-
-  * Delete departments, roles, and employees
-
-  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-
-## Commit Early and Often
-
-One of the most important skills to master as a web developer is version control. Building the habit of committing via Git is important for two reasons:
-
-* Your commit history is a signal to employers that you are actively working on projects and learning new skills.
-
-* Your commit history allows you to revert your codebase in the event that you need to return to a previous state.
-
-Follow these guidelines for committing:
-
-* Make single-purpose commits for related changes to ensure a clean, manageable history. If you are fixing two issues, make two commits.
-
-* Write descriptive, meaningful commit messages so that you and anyone else looking at your repository can easily understand its history.
-
-* Don't commit half-done work, for the sake of your collaborators (and your future self!).
-
-* Test your application before you commit to ensure functionality at every step in the development process.
-
-We would like you to have well over 200 commits by graduation, so commit early and often!
-
-
-## Submission on BCS
-
-You are required to submit the following:
-
-* The URL of the GitHub repository
+**Good Luck!**
